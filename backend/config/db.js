@@ -2,16 +2,17 @@
 import sql from "mssql";
 
 const config = {
-  user: "sa",
-  password: "Kellnowah256.?",
-  server: "IL-22-A8N9", // Server name or IP
-  database: "test3",
-  port: 1433,
+  user: "medicalapp_user",             // database user
+  password: "medicalapp_user",         // password for that user
+  server: "10.9.0.130",                // SQL Server IP
+  database: "MedicalAppDB",            // your database name
+  port: 1433,                           // default SQL Server port
   options: {
-    encrypt: false, // Use true if connecting to Azure
-    trustServerCertificate: true, // Use for self-signed certs or local dev
+    encrypt: false,                    // true if using Azure
+    trustServerCertificate: true,      // allow self-signed certs / local dev
   },
 };
+
 
 let pool;
 
