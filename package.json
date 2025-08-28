@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "express-winston": "^4.2.0",
+    "react-icons": "^5.5.0",
+    "react-router-dom": "^7.7.1",
+    "winston": "^3.17.0"
+  }
+}

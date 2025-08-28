@@ -1,0 +1,6 @@
+{"level":"error","message":"❌ Get users error by System: Timeout: Request failed to complete in 15000ms","service":"your-app-name","timestamp":"2025-08-18T12:29:00.449Z"}
+{"level":"error","message":"❌ Get users error by System: Timeout: Request failed to complete in 15000ms","service":"your-app-name","timestamp":"2025-08-18T12:29:15.514Z"}
+{"level":"error","message":"🔥 Upload error | User: iroot1@gmail.com | File: text2.1.xlsx | Error: Incorrect syntax near '&'.","service":"your-app-name","timestamp":"2025-08-24T04:51:49.135Z"}
+{"level":"error","message":"❌ Failed to log user activity: Invalid object name 'UserLogs'.","service":"your-app-name","timestamp":"2025-08-24T05:15:14.096Z"}
+{"level":"error","message":"❌ Failed to log user activity: Invalid object name 'UserLogs'.","service":"your-app-name","timestamp":"2025-08-24T05:15:59.956Z"}
+{"level":"error","message":"❌ Register error for irootezekiel318@gmail.com: String or binary data would be truncated in table 'test3.dbo.users', column 'email'. Truncated value: 'irootezekiel318@gmai'.","service":"your-app-name","timestamp":"2025-08-24T05:32:05.657Z"}
