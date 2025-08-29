@@ -121,38 +121,57 @@ export const fileUpload = async (req, res) => {
 
     pool = await connectToDB();
     let insertedCount = 0;
-    const duplicateEntries = [];
+    let duplicateMembers = [];
+    let principalsCreated = 0;
 
-    for (const [index, row] of validatedRows.entries()) {
+    // First, let's get all existing principals to map them by name
+    const allPrincipalsResult = await pool
+      .request()
+      .query(
+        "SELECT principal_id, principal_name, phone_number FROM Principals"
+      );
+
+    const principalsMap = {};
+    allPrincipalsResult.recordset.forEach((principal) => {
+      principalsMap[principal.principal_name.toLowerCase()] = principal;
+    });
+
+    // Process the data
+    for (const row of validatedRows) {
       const {
         scheme,
         principalName,
         memberName,
         relationship,
         gender,
-        phone_number,
+        phone_number, // This is the member's phone number
         email_address,
         dateOfBirth,
       } = row;
 
-      // Check if principal already exists by name (regardless of phone number)
-      const existingPrincipal = await pool
-        .request()
-        .input("principal_name", sql.NVarChar, principalName)
-        .query(
-          "SELECT principal_id, phone_number FROM Principals WHERE principal_name = @principal_name"
+      // Check if principal already exists by name only
+      const normalizedPrincipalName = principalName.toLowerCase();
+      let principalId;
+      let existingPrincipal = principalsMap[normalizedPrincipalName];
+
+      if (existingPrincipal) {
+        // Principal exists - use existing principal ID
+        principalId = existingPrincipal.principal_id;
+        console.log(
+          `Found existing principal: ${principalName} with ID: ${principalId}`
         );
+      } else {
+        // Principal doesn't exist - check if we have a principal phone number column
+        // If not, we'll need to create a new principal with a placeholder phone number
+        // For now, let's assume we need to create a new principal
+        const principalPhone = phone_number; // Using member's phone as fallback
 
-      let principalId, principalPhone;
-
-      if (existingPrincipal.recordset.length === 0) {
-        // Create new principal
         await pool
           .request()
           .input("scheme_name", sql.NVarChar, scheme)
           .input("principal_name", sql.NVarChar, principalName)
           .input("gender", sql.NVarChar, gender)
-          .input("phone_number", sql.NVarChar, phone_number)
+          .input("phone_number", sql.NVarChar, principalPhone)
           .input("email_address", sql.NVarChar, email_address)
           .input("date_of_birth", sql.Date, dateOfBirth)
           .query(
@@ -164,32 +183,19 @@ export const fileUpload = async (req, res) => {
           .request()
           .input("principal_name", sql.NVarChar, principalName)
           .query(
-            "SELECT principal_id, phone_number FROM Principals WHERE principal_name = @principal_name"
+            "SELECT principal_id FROM Principals WHERE principal_name = @principal_name"
           );
 
         principalId = result.recordset[0].principal_id;
-        principalPhone = result.recordset[0].phone_number;
-      } else {
-        // Use existing principal (even if phone number is different)
-        principalId = existingPrincipal.recordset[0].principal_id;
-        principalPhone = existingPrincipal.recordset[0].phone_number;
-
-        // Log that we're using existing principal with potentially different phone
-        if (existingPrincipal.recordset[0].phone_number !== phone_number) {
-          duplicateEntries.push(
-            `Row ${
-              index + 2
-            }: Using existing principal "${principalName}" with different phone number`
-          );
-        }
-      }
-
-      // Skip if member name is same as principal name
-      if (principalName.toLowerCase() === memberName.toLowerCase()) {
-        duplicateEntries.push(
-          `Row ${index + 2}: Skipped - Member name same as principal name`
+        principalsMap[normalizedPrincipalName] = {
+          principal_id: principalId,
+          principal_name: principalName,
+          phone_number: principalPhone,
+        };
+        principalsCreated++;
+        console.log(
+          `Created new principal: ${principalName} with ID: ${principalId}`
         );
-        continue;
       }
 
       // Check if member already exists for this principal
@@ -197,24 +203,23 @@ export const fileUpload = async (req, res) => {
         .request()
         .input("principal_id", sql.NVarChar, principalId)
         .input("member_name", sql.NVarChar, memberName)
+        .input("phone_number", sql.NVarChar, phone_number)
         .query(
-          "SELECT member_id FROM Members WHERE principal_id = @principal_id AND member_name = @member_name"
+          "SELECT member_id FROM Members WHERE principal_id = @principal_id AND member_name = @member_name AND phone_number = @phone_number"
         );
 
       if (existingMember.recordset.length > 0) {
-        duplicateEntries.push(
-          `Row ${
-            index + 2
-          }: Member "${memberName}" already exists for principal "${principalName}"`
+        // Member already exists - skip
+        duplicateMembers.push(
+          `Principal: ${principalName}, Member: ${memberName}, Phone: ${phone_number}`
         );
         continue;
       }
 
-      const finalMemberPhone =
-        phone_number && phone_number.trim() !== ""
-          ? phone_number
-          : principalPhone;
+      // Skip if member name is same as principal name (principal is not a member)
+      if (principalName.toLowerCase() === memberName.toLowerCase()) continue;
 
+      // Get the next sequence number for this principal
       const seqResult = await pool
         .request()
         .input("principal_id", sql.NVarChar, principalId)
@@ -224,6 +229,7 @@ export const fileUpload = async (req, res) => {
 
       const memberSeq = seqResult.recordset[0].next_seq;
 
+      // Insert the new member with their own phone number
       await pool
         .request()
         .input("member_seq", sql.Int, memberSeq)
@@ -231,7 +237,7 @@ export const fileUpload = async (req, res) => {
         .input("member_name", sql.NVarChar, memberName)
         .input("relationship", sql.NVarChar, relationship)
         .input("gender", sql.NVarChar, gender)
-        .input("phone_number", sql.NVarChar, finalMemberPhone)
+        .input("phone_number", sql.NVarChar, phone_number)
         .input("email_address", sql.NVarChar, email_address)
         .input("date_of_birth", sql.Date, dateOfBirth)
         .query(
@@ -240,6 +246,9 @@ export const fileUpload = async (req, res) => {
         );
 
       insertedCount++;
+      console.log(
+        `Added member ${memberName} to principal ${principalName} with sequence ${memberSeq}`
+      );
     }
 
     // Log success
@@ -252,19 +261,27 @@ export const fileUpload = async (req, res) => {
         "INSERT INTO FileUploadLogs (uploaded_by, file_name, status) VALUES (@uploaded_by, @file_name, @status)"
       );
 
-    let responseMessage = `✅ Upload complete: ${insertedCount} members inserted.`;
+    let message = `✅ Upload complete: ${insertedCount} members inserted.`;
 
-    if (duplicateEntries.length > 0) {
-      responseMessage += ` ${duplicateEntries.length} entries skipped or used existing principals.`;
-      res.status(207).json({
-        message: responseMessage,
-        duplicates: duplicateEntries,
-      });
-    } else {
-      res.status(200).json({
-        message: responseMessage,
-      });
+    if (principalsCreated > 0) {
+      message += ` ${principalsCreated} new principals created.`;
     }
+
+    if (duplicateMembers.length > 0) {
+      message += ` ${duplicateMembers.length} duplicate members skipped.`;
+    }
+
+    res.status(200).json({
+      message,
+      stats: {
+        membersInserted: insertedCount,
+        principalsCreated: principalsCreated,
+        duplicatesSkipped: duplicateMembers.length,
+      },
+      duplicates: {
+        members: duplicateMembers,
+      },
+    });
   } catch (err) {
     console.error("Upload error:", err);
     try {
@@ -278,7 +295,7 @@ export const fileUpload = async (req, res) => {
           "INSERT INTO FileUploadLogs (uploaded_by, file_name, status) VALUES (@uploaded_by, @file_name, @status)"
         );
     } catch (logErr) {
-      console.error("Error logging failed upload:", logErr);
+      console.error("Log error:", logErr);
     }
 
     res.status(500).json({ error: "Server error during file upload" });
