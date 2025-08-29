@@ -105,16 +105,16 @@ const LoginPage = () => {
 
         <button
           type="submit"
-          className="mt-2 w-full h-11 rounded-full text-white bg-indigo-500 hover:opacity-90 transition-opacity"
+          className="mt-2 mb-11 w-full h-11 rounded-full text-white bg-indigo-500 hover:opacity-90 transition-opacity"
         >
           Login
         </button>
-        <p className="text-gray-500 text-sm mt-3 mb-11">
+        {/* <p className="text-gray-500 text-sm mt-3 mb-11">
           Don’t have an account?{" "}
           <Link to="/signup" className="text-indigo-500">
             Sign Up
           </Link>
-        </p>
+        </p> */}
       </form>
     </div>
   );

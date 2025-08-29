@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { sql, connectToDB } from "../config/db.js";
 
-// Helper: Log user activity to database
+// Replace the logUserActivity function with this:
 const logUserActivity = async (
   pool,
   actionBy,
@@ -24,7 +24,7 @@ const logUserActivity = async (
          VALUES (@action, @performed_by, @target_user, @status, @timestamp)`
       );
   } catch (err) {
-    res.status(err.message);
+    console.error("Failed to log user activity:", err.message);
   }
 };
 
@@ -65,31 +65,36 @@ export const getUserProfile = async (req, res) => {
 };
 
 // ✅ REGISTER new user
+// ✅ REGISTER new user
 export const registerUser = async (req, res) => {
   const { email, password, role } = req.body;
-  if (!email || !password || !role)
+  if (!email || !password || !role) {
+    console.log("❌ Missing fields:", {
+      email: !!email,
+      password: !!password,
+      role: !!role,
+    });
     return res.status(400).json({ error: "All fields are required" });
+  }
 
   try {
+    console.log("🔗 Attempting database connection...");
     const pool = await connectToDB();
+
     const existingUser = await pool
       .request()
       .input("email", sql.NVarChar, email)
       .query("SELECT * FROM Users WHERE email = @email");
 
     if (existingUser.recordset.length > 0) {
-      await logUserActivity(
-        pool,
-        req.user?.email || "System",
-        email,
-        "REGISTER",
-        "FAILED"
-      );
+      await logUserActivity(pool, "System", email, "REGISTER", "FAILED");
       return res.status(409).json({ error: "Email already exists." });
     }
 
+    console.log("🔐 Hashing password...");
     const hashedPassword = await bcrypt.hash(password, 10);
-    await pool
+
+    const insertResult = await pool
       .request()
       .input("email", sql.NVarChar, email)
       .input("password", sql.NVarChar, hashedPassword)
@@ -98,17 +103,21 @@ export const registerUser = async (req, res) => {
         "INSERT INTO Users (email, password, role) VALUES (@email, @password, @role)"
       );
 
-    await logUserActivity(
-      pool,
-      req.user?.email || "System",
-      email,
-      "REGISTER",
-      "SUCCESS"
+    console.log(
+      "✅ User inserted successfully, rows affected:",
+      insertResult.rowsAffected[0]
     );
 
+    await logUserActivity(pool, "System", email, "REGISTER", "SUCCESS");
     res.status(201).json({ message: "User registered successfully." });
   } catch (error) {
-    res.status(500).json({ error: "Server error during registration." });
+    console.error("Error message:", error.message);
+
+    res.status(500).json({
+      error: "Server error during registration.",
+      details:
+        process.env.NODE_ENV === "development" ? error.message : undefined,
+    });
   }
 };
 
