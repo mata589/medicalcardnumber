@@ -18,38 +18,47 @@ const Clients = () => {
   }, []);
 
   const fetchClientData = async () => {
-    try {
-      setLoading(true);
-      const response = await axios.get(
-        "http://localhost:5000/api/clients/get-data"
-      );
-      const result = Array.isArray(response.data.users)
-        ? response.data.users
-        : [];
+  try {
+    setLoading(true);
 
-      // Process data to show ID instead of Family Code for principals
-      const processedData = processFamilyCodesAndIDs(result);
-      setData(processedData);
+    const token = localStorage.getItem("token"); // Get token from localStorage
+    if (!token) throw new Error("No token found. Please login.");
 
-      // Only show toast on manual refresh, not initial load
-      if (!initialLoad) {
-        toast.success("Data refreshed successfully", {
-          position: "top-right",
-          duration: 1500,
-        });
+    const response = await axios.get(
+      "http://10.9.0.130:5000/api/clients/get-data",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, // Include token here
+        },
       }
-      setInitialLoad(false);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      setData([]);
-      toast.error("Failed to load client data", {
+    );
+
+    const result = Array.isArray(response.data.users)
+      ? response.data.users
+      : [];
+
+    const processedData = processFamilyCodesAndIDs(result);
+    setData(processedData);
+
+    if (!initialLoad) {
+      toast.success("Data refreshed successfully", {
         position: "top-right",
-        duration: 5000,
+        duration: 1500,
       });
-    } finally {
-      setLoading(false);
     }
-  };
+    setInitialLoad(false);
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    setData([]);
+    toast.error("Failed to load client data", {
+      position: "top-right",
+      duration: 5000,
+    });
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   // Process data to show ID for principals and Family Code for members
   // Process data to show ID for principals and Family Code for members

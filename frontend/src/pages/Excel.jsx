@@ -1,4 +1,4 @@
-// src/pages/ExcelUpload.jsx
+﻿// src/pages/ExcelUpload.jsx
 import React, { useState } from "react";
 import axios from "axios";
 
@@ -29,7 +29,7 @@ const ExcelUpload = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/clients/upload",
+        "http://10.9.0.130:5000/api/clients/upload",
         formData,
         {
           headers: {

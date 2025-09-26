@@ -38,7 +38,7 @@ const ResetPasswordPage = () => {
     try {
       // Send request with cookies (JWT stored as httpOnly cookie)
       const res = await axios.put(
-        "http://localhost:5000/api/clients/update-password",
+        "http://10.9.0.130:5000/api/clients/update-password",
         {
           email,
           newPassword: password,

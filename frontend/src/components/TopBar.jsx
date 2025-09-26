@@ -32,7 +32,7 @@ const TopBar = ({ onToggleSidebar }) => {
         }
 
         const response = await axios.get(
-          "http://localhost:5000/api/clients/users/profile",
+          "http://10.9.0.130:5000/api/clients/users/profile",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -61,7 +61,7 @@ const TopBar = ({ onToggleSidebar }) => {
   const handleLogout = async () => {
     try {
       await axios.post(
-        "http://localhost:5000/api/clients/logout",
+        "http://10.9.0.130:5000/api/clients/logout",
         {},
         { withCredentials: true }
       );

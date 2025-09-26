@@ -20,7 +20,7 @@ const Dashboard = () => {
   const fetchData = async (showNotification = false) => {
     try {
       const response = await axios.get(
-        "http://localhost:5000/api/clients/get-data"
+        "http://10.9.0.130:5000/api/clients/get-data"
       );
       const users = response.data.users;
       if (Array.isArray(users)) {

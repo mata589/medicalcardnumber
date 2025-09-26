@@ -1,4 +1,4 @@
-// server.js
+﻿// server.js
 import express from "express";
 import cors from "cors";
 import { connectToDB } from "../backend/config/db.js";
@@ -13,7 +13,7 @@ import cookieParser from "cookie-parser";
 connectToDB();
 
 const app = express();
-const PORT = 5000;
+const PORT = 5000
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -21,7 +21,7 @@ const __dirname = path.dirname(__filename);
 // ✅ CORS setup
 app.use(
   cors({
-    origin: "http://localhost:5173", // frontend origin
+    origin: "http://10.9.0.130:5173", // frontend origin
     credentials: true,
   })
 );
@@ -42,6 +42,6 @@ app.use((req, res) => {
 });
 
 // ✅ Start server
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+app.listen(PORT, '0.0.0.0',() => {
+  console.log(`🚀 Server running on http:http://10.9.0.130:${PORT}`);
 });

@@ -1,11 +1,11 @@
-// db.js
+﻿// db.js
 import sql from "mssql";
 
 const config = {
-  user: "sa",
-  password: "Kellnowah256.?",
-  server: "IL-22-A8N9", // Server name or IP
-  database: "test3",
+  user: "medicalapp_user",
+  password: "medicalapp_user",
+  server: "10.9.0.130\\NAVDEMO", // Server name or IP
+  database: "MedicalAppDB",
   port: 1433,
   options: {
     encrypt: false, // Use true if connecting to Azure

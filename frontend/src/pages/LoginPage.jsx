@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+﻿import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import logo from "../assets/icea.png"; // Import the logo
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -14,7 +15,7 @@ const LoginPage = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/clients/login",
+        "http://10.9.0.130:5000/api/clients/login",
         {
           email,
           password,
@@ -42,12 +43,22 @@ const LoginPage = () => {
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <form
         onSubmit={handleLogin}
-        className="max-w-96 w-full text-center border border-gray-300/60 rounded-2xl px-8 bg-white"
+        className="max-w-96 w-full text-center border border-gray-300/60 rounded-2xl px-8"
+        style={{ backgroundColor: '#123985' }}
       >
-        <h1 className="text-gray-900 text-3xl mt-10 font-medium">Login</h1>
-        <p className="text-gray-500 text-sm mt-2">Please sign in to continue</p>
+        {/* Logo */}
+        <div className="flex justify-center mt-8 mb-3">
+          <img 
+            src={logo} 
+            alt="ICEA Logo" 
+            className="h-30 w-auto object-contain"
+          />
+        </div>
 
-        {error && <p className="text-red-500 text-sm mt-4">{error}</p>}
+        
+        <p className="text-gray-300 text-sm ">Please sign in to continue</p>
+
+        {error && <p className="text-red-400 text-sm mt-4">{error}</p>}
 
         <div className="flex items-center w-full mt-10 bg-white border border-gray-300/80 h-12 rounded-full overflow-hidden pl-6 gap-2">
           <svg
@@ -97,20 +108,16 @@ const LoginPage = () => {
           />
         </div>
 
-        <div className="mt-5 text-left text-indigo-500">
-          <a className="text-sm" href="#">
-            Forgot password?
-          </a>
-        </div>
+      
 
         <button
           type="submit"
-          className="mt-2 mb-11 w-full h-11 rounded-full text-white bg-indigo-500 hover:opacity-90 transition-opacity"
+          className="mt-5 mb-11 w-full h-11 rounded-full text-white bg-indigo-500 hover:opacity-90 transition-opacity"
         >
           Login
         </button>
         {/* <p className="text-gray-500 text-sm mt-3 mb-11">
-          Don’t have an account?{" "}
+          Don't have an account?{" "}
           <Link to="/signup" className="text-indigo-500">
             Sign Up
           </Link>

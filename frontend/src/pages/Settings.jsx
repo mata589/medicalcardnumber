@@ -23,7 +23,7 @@ const Settings = () => {
     const fetchUsers = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/clients/users"
+          "http://10.9.0.130:5000/api/clients/users"
         );
         setUsers(response.data);
       } catch (error) {
@@ -52,7 +52,7 @@ const Settings = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/clients/register",
+        "http://10.9.0.130:5000/api/clients/register",
         signUpData
       );
 
@@ -63,7 +63,7 @@ const Settings = () => {
 
         // Refresh users list
         const response = await axios.get(
-          "http://localhost:5000/api/clients/users"
+          "http://l10.9.0.130:5000/api/clients/users"
         );
         setUsers(response.data);
 

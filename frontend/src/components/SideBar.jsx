@@ -31,7 +31,7 @@ const SideBar = () => {
         if (!token) return;
 
         const response = await axios.get(
-          "http://localhost:5000/api/clients/users/profile",
+          "http://10.9.0.130:5000/api/clients/users/profile",
           {
             headers: { Authorization: `Bearer ${token}` },
           }

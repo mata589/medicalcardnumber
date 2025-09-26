@@ -10,7 +10,7 @@ const ProtectedRoute = () => {
     const checkAuth = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:5000/api/clients/verify",
+          "http://10.9.0.130:5000/api/clients/verify",
           {
             withCredentials: true,
           }

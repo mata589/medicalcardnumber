@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+﻿import React, { useState } from "react";
 import axios from "axios";
 import { FaUserPlus, FaTrashAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
@@ -99,7 +99,7 @@ const AddClient = () => {
     try {
       setLoading(true);
       const response = await axios.post(
-        "http://localhost:5000/api/clients/add-client",
+        "http://10.9.0.130:5000/api/clients/add-client",
         payload,
         {
           headers: {
