@@ -9,8 +9,9 @@ import router4 from "./routes/verifyRoute.js";
 import { fileURLToPath } from "url";
 import path from "path";
 import cookieParser from "cookie-parser";
+import compareRoutes from './controllers/priceComparison.js';
 
-connectToDB();
+// connectToDB();
 
 const app = express();
 const PORT = 5000
@@ -21,7 +22,7 @@ const __dirname = path.dirname(__filename);
 // ✅ CORS setup
 app.use(
   cors({
-    origin: "http://10.9.0.130:5173", // frontend origin
+    origin: "http://localhost:5173", // frontend origin
     credentials: true,
   })
 );
@@ -35,6 +36,7 @@ app.use("/api/clients", router); // fileUploadRoute
 app.use("/api/clients", router2); // clients
 app.use("/api/clients", router3); // userLogin
 app.use("/api/clients", router4); // verifyRoute
+app.use('/api', compareRoutes);
 
 // ✅ 404 handler
 app.use((req, res) => {
