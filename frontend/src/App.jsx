@@ -11,6 +11,7 @@ import SignUpPage from "./pages/SignUpPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Settings from "./pages/Settings";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
+import FileComparison from "./pages/FileComparison";
 
 const App = () => {
   return (
@@ -24,6 +25,7 @@ const App = () => {
             <Route path="/upload" element={<Excel />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/reset-password" element={<ResetPasswordPage />} />
+            <Route path="/price-comparison" element={<FileComparison />} />
           </Route>
         </Route>
         <Route path="/login" element={<LoginPage />} />

@@ -9,6 +9,7 @@ import {
   FiUpload,
   FiSettings,
   FiLogOut,
+   FiBarChart,  
 } from "react-icons/fi";
 import { FaUserFriends } from "react-icons/fa";
 import axios from "axios";
@@ -63,6 +64,11 @@ const SideBar = () => {
       path: "/add-client",
       icon: <FaUserFriends size={20} />,
       label: "Add Client",
+    },
+     {
+      path: "/price-comparison",
+      icon: < FiBarChart size={20} />,
+      label: "Price Comparison",
     },
     {
       path: "/upload",
