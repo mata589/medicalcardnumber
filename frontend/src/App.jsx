@@ -18,7 +18,7 @@ const App = () => {
     <>
       <Routes>
         <Route path="/" element={<Layout />}>
-          {/* <Route element={<ProtectedRoute />}> */}
+          <Route element={<ProtectedRoute />}>
             <Route path="/" element={<Dashboard />} />
             <Route path="/clients" element={<Clients />} />
             <Route path="/add-client" element={<AddClient />} />
@@ -27,7 +27,7 @@ const App = () => {
             <Route path="/reset-password" element={<ResetPasswordPage />} />
             <Route path="/price-comparison" element={<FileComparison />} />
           </Route>
-        {/* </Route> */}
+        </Route>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignUpPage />} />
       </Routes>
