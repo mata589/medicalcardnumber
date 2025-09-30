@@ -22,7 +22,7 @@ const __dirname = path.dirname(__filename);
 // ✅ CORS setup
 app.use(
   cors({
-    origin: "http://localhost:5173", // frontend origin
+    origin: "http://10.9.0.130:5173", // frontend origin
     credentials: true,
   })
 );

@@ -5,7 +5,7 @@ const config = {
   user: "medicalapp_user",
   password: "medicalapp_user",
   server: "10.9.0.130\\NAVDEMO", // Server name or IP
-  database: "MedicalAppDB",
+  database: "MedicalAppDB", 
   port: 1433,
   options: {
     encrypt: false, // Use true if connecting to Azure
