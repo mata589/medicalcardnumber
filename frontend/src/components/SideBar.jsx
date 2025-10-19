@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { RiDashboardLine } from "react-icons/ri";
 import { useLocation } from "react-router-dom";
+import { FiFileText } from "react-icons/fi";
 import {
   FiMenu,
   FiChevronLeft,
@@ -75,6 +76,11 @@ const SideBar = () => {
       icon: <FiUpload size={20} />,
       label: "Upload Data",
     },
+    {
+  path: "/scheme-reports",
+  icon: <FiFileText size={20} />,
+  label: "Scheme Reports",
+},
     // Only show Settings if role is Administrator
     ...(userRole === "admin"
       ? [

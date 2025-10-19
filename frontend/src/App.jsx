@@ -12,13 +12,15 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Settings from "./pages/Settings";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import FileComparison from "./pages/FileComparison";
+import SchemeReports from "./pages/SchemeReports";
 
 const App = () => {
   return (
     <>
       <Routes>
         <Route path="/" element={<Layout />}>
-          <Route element={<ProtectedRoute />}>
+          {/* <Route> */}
+           <Route element={<ProtectedRoute />}>
             <Route path="/" element={<Dashboard />} />
             <Route path="/clients" element={<Clients />} />
             <Route path="/add-client" element={<AddClient />} />
@@ -26,6 +28,7 @@ const App = () => {
             <Route path="/settings" element={<Settings />} />
             <Route path="/reset-password" element={<ResetPasswordPage />} />
             <Route path="/price-comparison" element={<FileComparison />} />
+            <Route path="/scheme-reports" element={<SchemeReports />} />
           </Route>
         </Route>
         <Route path="/login" element={<LoginPage />} />
